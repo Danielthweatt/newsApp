@@ -2,21 +2,29 @@
     <h1 class="col-12 text-center">Deadspin Discussion Board</h1>
 </div>
 <div class="row">
-    <h3 class="col-12 text-center">Articles Currently on the Deadspin Homepage:</h3>
+    <h4 class="col-12 text-center">Current Homepage Articles:</h4>
 </div>
 <div id="articles" class="row">
     <div class="col-1 col-md-2"></div>
-    <ul class="list-group col-10 col-md-8">
-        {{#each articles}}
-            <li class="list-group-item text-center">{{this}}</li>
-        {{/each}}
-        {{#unless articles}}
-            <li class="list-group-item text-center">Unable to display articles.</li>
-        {{/unless}}
-    </ul>
+    <div class="col-10 col-md-8">
+        <ul class="list-group">
+            {{#each articles}}
+                <li class="list-group-item text-center">
+                    <h6><a href={{link}} class="text-center">{{title}}</a></h6>
+                    {{#if summary}}
+                        <p class="text-center">{{summary}}</p>
+                    {{/if}}
+                    <button type="button" class="btn btn-outline-danger commentButton" data-link={{link}}>Comment</button>
+                </li>
+            {{/each}}
+            {{#unless articles}}
+                <li class="list-group-item text-center">Unable to display articles.</li>
+            {{/unless}}
+        </ul>
+    </div>
 </div>
 <div id="buttons" class="row">
     <div class="col-12 text-center">
-        <a href="#" id="linkButton" class="btn btn-success" role="button">Link Button</a>
+        <button id="linkButton" type="button" class="btn btn-info">Find Article Button</button>
     </div>
 </div>
