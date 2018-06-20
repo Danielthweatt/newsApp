@@ -2,6 +2,8 @@
 const express = require("express");
 const request = require("request");
 const cheerio = require("cheerio");
+const mongoose = require("mongoose");
+const db = require("../models");
 
 // Router Setup
 const router = express.Router();
@@ -11,21 +13,20 @@ router.get("/", function(req, res){
     request("https://www.deadspin.com/", function(error, response, html){
         const $ = cheerio.load(html);
         const results = [];
-        let link;
-        let title;
         let headlineElement;
-        let summary;
         $("div.post-wrapper").each(function(i, element){
+            const result = {};
             headlineElement = $("h1.headline", element);
-            link = headlineElement.children().attr("href");
-            title = headlineElement.children().text();
-            summary = $("div.entry-summary", element).children().text();
-            if (title) {
-                results.push({
-                    title: title,
-                    link: link,
-                    summary: summary
+            result.link = headlineElement.children().attr("href");
+            result.title = headlineElement.children().text();
+            result.summary = $("div.entry-summary", element).children().text();
+            if (result.title) {
+                db.Article.create(result).then(function(dbArticle){
+                    console.log(dbArticle);
+                }).catch(function(err){
+                    return res.json(err);
                 });
+                results.push(result);
             }
         });
         const hbsObject = {
