@@ -1,3 +1,22 @@
-<div class="row text-center">
-    <p class="col-12">Hello</p>
+<div class="row">
+    <h1 class="col-12 text-center">Deadspin Discussion Board</h1>
+</div>
+<div class="row">
+    <h3 class="col-12 text-center">Articles Currently on the Deadspin Homepage:</h3>
+</div>
+<div id="articles" class="row">
+    <div class="col-1 col-md-2"></div>
+    <ul class="list-group col-10 col-md-8">
+        {{#each articles}}
+            <li class="list-group-item text-center">{{this}}</li>
+        {{/each}}
+        {{#unless articles}}
+            <li class="list-group-item text-center">Unable to display articles.</li>
+        {{/unless}}
+    </ul>
+</div>
+<div id="buttons" class="row">
+    <div class="col-12 text-center">
+        <a href="#" id="linkButton" class="btn btn-success" role="button">Link Button</a>
+    </div>
 </div>

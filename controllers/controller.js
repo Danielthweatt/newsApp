@@ -6,7 +6,10 @@ const router = express.Router();
 
 // Routes
 router.get("/", function(req, res){
-    res.render("index");
+    const hbsObject = {
+        articles: ["Article One", "Article Two", "Article Three"]
+    };
+    res.render("index", hbsObject);
 });
 
 
