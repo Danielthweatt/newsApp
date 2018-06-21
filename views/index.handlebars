@@ -1,3 +1,15 @@
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <h3>Deadspin Discussion Board</h3>
+    <form class="form-inline">
+        <input class="form-control ml-sm-2" type="text" placeholder="Find Articles By Date">
+        <button class="btn btn-success ml-sm-2" type="submit">Search</button>
+    </form>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="#"><button type="button" class="btn btn-danger">Scrape New Articles</button></a>
+        </li>
+    </ul>
+</nav>
 <div class="row">
     <h1 class="col-12 text-center">Deadspin Discussion Board</h1>
 </div>
@@ -21,10 +33,5 @@
                 <li class="list-group-item text-center">Unable to display articles.</li>
             {{/unless}}
         </ul>
-    </div>
-</div>
-<div id="buttons" class="row">
-    <div class="col-12 text-center">
-        <button id="linkButton" type="button" class="btn btn-info">Find Article Button</button>
     </div>
 </div>

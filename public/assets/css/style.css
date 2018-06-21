@@ -1,3 +1,7 @@
+h3 {
+    color: white;
+}
+
 a { 
     color: black;
     text-decoration: none;
@@ -8,6 +12,6 @@ a:hover {
     text-decoration: none;
 }
 
-#linkButton {
-    margin: 10px 0;
+#articles {
+    margin-bottom: 15px;
 }
