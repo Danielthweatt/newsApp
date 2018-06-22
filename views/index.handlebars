@@ -6,7 +6,7 @@
     </form>
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link" href="#"><button type="button" class="btn btn-danger">Scrape New Articles</button></a>
+            <a class="nav-link" href="#"><button id="re-scrape" type="button" class="btn btn-danger">Scrape Again</button></a>
         </li>
     </ul>
 </nav>
@@ -14,12 +14,12 @@
     <h1 class="col-12 text-center">Deadspin Discussion Board</h1>
 </div>
 <div class="row">
-    <h4 class="col-12 text-center">Current Homepage Articles:</h4>
+    <h4 class="col-12 text-center">Current (Scraped) Homepage Articles:</h4>
 </div>
-<div id="articles" class="row">
+<div class="row">
     <div class="col-1 col-md-2"></div>
     <div class="col-10 col-md-8">
-        <ul class="list-group">
+        <ul id="article-list" class="list-group">
             {{#each articles}}
                 <li class="list-group-item text-center">
                     <h6><a href={{link}} class="text-center">{{title}}</a></h6>
