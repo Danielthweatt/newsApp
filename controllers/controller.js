@@ -8,6 +8,34 @@ const db = require("../models");
 // Router Setup
 const router = express.Router();
 
+// Helper
+function saveArticlesToDb(results, articles, result, res){
+    if (results.length > 0) {
+        result = results.pop();
+        db.Article.findOne({link: result.link}).then(function(article){
+            if (!article) {
+                db.Article.create(result).then(function(newArticle){
+                    result.id = newArticle._id;
+                    articles.unshift(result);
+                    saveArticlesToDb(results, articles, result, res);
+                }).catch(function(err){
+                    console.log(`Oh boy, it broke: ${err}`);
+                    res.json([]);
+                });
+            } else {
+                result.id = article._id;
+                articles.unshift(result);
+                saveArticlesToDb(results, articles, result, res);
+            }
+        }).catch(function(err){
+            console.log(`Oh boy, it broke: ${err}`);
+            res.json([]);
+        });
+    } else {
+        res.json(articles);
+    }
+};
+
 // Routes
 router.get("/", function(req, res){
     res.render("index");
@@ -31,6 +59,11 @@ router.get("/articles/commented", function(req, res){
     });
 });
 
+router.get("/article", function(req, res){
+    console.log(req.body);
+    res.end();
+});
+
 
 router.get("/scrape", function(req, res){
     request("https://www.deadspin.com/", function(error, response, html){
@@ -44,21 +77,10 @@ router.get("/scrape", function(req, res){
             result.title = headlineElement.children().text();
             result.summary = $("div.entry-summary", element).children().text();
             if (result.title && result.link) {
-                db.Article.findOne({link: result.link}).then(function(article){
-                    if (!article) {
-                        db.Article.create(result).then(function(newArticle){
-                            console.log(newArticle);
-                        }).catch(function(err){
-                            console.log(`Oh boy, it broke: ${err}`);
-                        });
-                    }
-                }).catch(function(err){
-                    console.log(`Oh boy, it broke: ${err}`);
-                });
                 results.push(result);
             }
+            saveArticlesToDb(results, [], undefined, res);
         });
-        res.json(results);
     });
 });
 

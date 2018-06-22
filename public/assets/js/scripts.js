@@ -90,6 +90,17 @@ $(function(){
         }
     };
 
+    function comment(button){
+        if (canClick) {
+            canClick = false;
+            const link = button.attr("data-link");
+            $.getJSON(`/article/${link}`, function(articles){
+                alert("Yay! It worked!");
+            });
+            canClick = true;
+        }
+    };
+
     // Event Listeners
     $("#all-articles").click(function(){
         getArticles();
@@ -103,6 +114,9 @@ $(function(){
         scrape(false);
     });
 
+    $(document).on("click", ".commentButton", function() {
+        comment($(this));
+    });
     // Function Calls
     scrape(true);
 });
