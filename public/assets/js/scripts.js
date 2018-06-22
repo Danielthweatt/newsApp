@@ -1,9 +1,10 @@
 $(function(){
     // Variables
     const articleList = $("#article-list");
+    const reScrape = $("#re-scrape");
 
     // Function Declarations
-    function reScrape(){
+    function scrape(){
         articleList.empty();
         articleList.append(`<li class="list-group-item text-center">Scraping Deadspin...</li>`);
         $.getJSON("/scrape", function(articles){
@@ -23,11 +24,16 @@ $(function(){
             } else {
                 articleList.append(`<li class="list-group-item text-center">Unable to display articles.</li>`);
             }
+            reScrape.show();
         });
     };
 
     // Event Listeners
-    $("#re-scrape").click(function(){
-        reScrape();
-    })
+    reScrape.click(function(){
+        reScrape.hide();
+        scrape();
+    });
+
+    // Function Calls
+    scrape();
 });
