@@ -13,6 +13,14 @@ router.get("/", function(req, res){
     res.render("index");
 });
 
+router.get("/articles", function(req, res){
+    db.Article.find({}).sort({dateCreated: 1}).then(function(articles){
+        res.json(articles);
+    }).catch(function(err){
+        console.log(`Oh boy, it broke: ${err}`);
+    });
+});
+
 router.get("/scrape", function(req, res){
     request("https://www.deadspin.com/", function(error, response, html){
         const $ = cheerio.load(html);
@@ -24,7 +32,7 @@ router.get("/scrape", function(req, res){
             result.link = headlineElement.children().attr("href");
             result.title = headlineElement.children().text();
             result.summary = $("div.entry-summary", element).children().text();
-            if (result.title) {
+            if (result.title && result.link) {
                 db.Article.findOne({link: result.link}).then(function(article){
                     if (!article) {
                         db.Article.create(result).then(function(newArticle){
@@ -39,10 +47,7 @@ router.get("/scrape", function(req, res){
                 results.push(result);
             }
         });
-        const resultObject = {
-            articles: results
-        };
-        res.json(resultObject);
+        res.json(results);
     });
 });
 

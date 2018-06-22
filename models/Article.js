@@ -6,15 +6,23 @@ const Schema = mongoose.Schema;
 
 // Article Schema
 const ArticleSchema = new Schema({
-    title: {
+    title: String,
+    link: {
         type: String,
-        required: true
+        unique: true
     },
-    link: String,
     summary: String,
+    commentedOn: {
+        type: Boolean,
+        default: false
+    },
     comment: {
         type: Schema.Types.ObjectId,
         ref: "Comment"
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now
     }
 });
 
