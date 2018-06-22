@@ -18,8 +18,19 @@ router.get("/articles", function(req, res){
         res.json(articles);
     }).catch(function(err){
         console.log(`Oh boy, it broke: ${err}`);
+        res.json([]);
     });
 });
+
+router.get("/articles/commented", function(req, res){
+    db.Article.find({commentedOn: true}).sort({dateCreated: 1}).then(function(articles){
+        res.json(articles);
+    }).catch(function(err){
+        console.log(`Oh boy, it broke: ${err}`);
+        res.json([]);
+    });
+});
+
 
 router.get("/scrape", function(req, res){
     request("https://www.deadspin.com/", function(error, response, html){
