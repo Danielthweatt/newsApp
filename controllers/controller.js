@@ -60,10 +60,13 @@ router.get("/articles/commented", function(req, res){
 });
 
 router.get("/article/:id", function(req, res){
-    console.log(req.params.id);
-    res.end();
+    db.Article.findOne({_id: req.params.id}).populate("comment").then(function(article){
+        res.json([article]);
+    }).catch(function(err){
+        console.log(`Oh boy, it broke: ${err}`);
+        res.json([]);
+    });
 });
-
 
 router.get("/scrape", function(req, res){
     request("https://www.deadspin.com/", function(error, response, html){
@@ -81,6 +84,25 @@ router.get("/scrape", function(req, res){
             }
         });
         saveArticlesToDb(results, [], undefined, res);
+    });
+});
+
+router.post("/comment/:articleId", function(req, res){
+    console.log(req.params.articleId);
+    db.Comment.create(req.body).then(function(newComment){
+        return db.Article.findOneAndUpdate({
+            _id: req.params.articleId
+        }, {
+            comment: newComment._id, 
+            commentedOn: true
+        }, {
+            new: true
+        });
+    }).then(function(article){
+        console.log(article);
+        res.json(article);
+    }).catch(function(err){
+        res.json(err);
     });
 });
 

@@ -3,6 +3,11 @@ $(function(){
     let canClick;
     const informativeHeader = $("#informative-header");
     const articleList = $("#article-list");
+    const commentModal = $("#commentModal");
+    const modalTitle = $("#modal-title");
+    const commentAuthor = $("#comment-author");
+    const commentBody = $("#comment-body");
+    const submitCommentForm = $("#submit-comment-form");
 
     // Function Declarations
     function scrape(initialScrape){
@@ -48,7 +53,7 @@ $(function(){
                         articleList.append(
                             `<li class="list-group-item text-center">
                                 <h6><a href=${article.link} class="text-center">${article.title}</a></h6>
-                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article.id}>
+                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article._id}>
                                     Comment
                                 </button>
                             </li>`
@@ -76,7 +81,7 @@ $(function(){
                         articleList.append(
                             `<li class="list-group-item text-center">
                                 <h6><a href=${article.link} class="text-center">${article.title}</a></h6>
-                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article.id}>
+                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article._id}>
                                     Comment
                                 </button>
                             </li>`
@@ -94,11 +99,45 @@ $(function(){
         if (canClick) {
             canClick = false;
             const id = button.attr("data-id");
-            $.getJSON(`/article/${id}`, function(articles){
-                alert("Yay! It worked!");
+            $.getJSON(`/article/${id}`, function(article){
+                console.log(article);
+                if (article.length > 0) {
+                    modalTitle.text(article[0].title);
+                    submitCommentForm.attr("data-id", article[0]._id);
+                    if (article.comment) {
+                        commentAuthor.val(article[0].comment.author);
+                        commentBody.val(article[0].comment.body);
+                    }
+                    commentModal.modal("show");
+                } else {
+                    canClick = true;
+                }
             });
-            canClick = true;
         }
+    };
+
+    function submitComment(){
+        const articleId = submitCommentForm.attr("data-id");
+        const comment = {
+            author: commentAuthor.val().trim(),
+            body: commentBody.val().trim()
+        };
+        $.ajax({
+            method: "POST",
+            url: "/comment/" + articleId,
+            data: comment
+        }).then(function(response){
+            console.log(response);
+            commentModal.modal("hide");
+        });
+    };
+
+    function refreshModal(){
+        canClick = true;
+        modalTitle.text("");
+        submitCommentForm.attr("data-id", "");
+        commentAuthor.val("");
+        commentBody.val("");
     };
 
     // Event Listeners
@@ -117,6 +156,16 @@ $(function(){
     $(document).on("click", ".commentButton", function() {
         comment($(this));
     });
+
+    submitCommentForm.on("submit", function(event){
+        event.preventDefault();
+        submitComment();
+    });
+
+    commentModal.on("hidden.bs.modal", function(){
+        refreshModal();
+    });
+
     // Function Calls
     scrape(true);
 });
