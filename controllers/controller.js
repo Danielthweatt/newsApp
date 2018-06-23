@@ -42,7 +42,7 @@ router.get("/", function(req, res){
 });
 
 router.get("/articles", function(req, res){
-    db.Article.find({}).sort({dateCreated: 1}).then(function(articles){
+    db.Article.find({}).sort({dateCreated: -1}).then(function(articles){
         res.json(articles);
     }).catch(function(err){
         console.log(`Oh boy, it broke: ${err}`);
@@ -51,7 +51,7 @@ router.get("/articles", function(req, res){
 });
 
 router.get("/articles/commented", function(req, res){
-    db.Article.find({commentedOn: true}).sort({dateCreated: 1}).then(function(articles){
+    db.Article.find({commentedOn: true}).sort({dateCreated: -1}).then(function(articles){
         res.json(articles);
     }).catch(function(err){
         console.log(`Oh boy, it broke: ${err}`);
@@ -59,8 +59,8 @@ router.get("/articles/commented", function(req, res){
     });
 });
 
-router.get("/article", function(req, res){
-    console.log(req.body);
+router.get("/article/:id", function(req, res){
+    console.log(req.params.id);
     res.end();
 });
 
@@ -79,8 +79,8 @@ router.get("/scrape", function(req, res){
             if (result.title && result.link) {
                 results.push(result);
             }
-            saveArticlesToDb(results, [], undefined, res);
         });
+        saveArticlesToDb(results, [], undefined, res);
     });
 });
 

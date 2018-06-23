@@ -20,14 +20,14 @@ $(function(){
                             `<li class="list-group-item text-center">
                                 <h6><a href=${article.link} class="text-center">${article.title}</a></h6>
                                 <p class="text-center">${article.summary}</p>
-                                <button type="button" class="btn btn-outline-danger commentButton" data-link=${article.link}>
+                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article.id}>
                                     Comment
                                 </button>
                             </li>`
                         );
                     });
                 } else {
-                    articleList.append(`<li class="list-group-item text-center">Unable to display articles.</li>`);
+                    articleList.append(`<li class="list-group-item text-center">Unable to display articles. Try scraping again.</li>`);
                 }
                 canClick = true;
             });
@@ -48,7 +48,7 @@ $(function(){
                         articleList.append(
                             `<li class="list-group-item text-center">
                                 <h6><a href=${article.link} class="text-center">${article.title}</a></h6>
-                                <button type="button" class="btn btn-outline-danger commentButton" data-link=${article.link}>
+                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article.id}>
                                     Comment
                                 </button>
                             </li>`
@@ -76,7 +76,7 @@ $(function(){
                         articleList.append(
                             `<li class="list-group-item text-center">
                                 <h6><a href=${article.link} class="text-center">${article.title}</a></h6>
-                                <button type="button" class="btn btn-outline-danger commentButton" data-link=${article.link}>
+                                <button type="button" class="btn btn-outline-danger commentButton" data-id=${article.id}>
                                     Comment
                                 </button>
                             </li>`
@@ -93,8 +93,8 @@ $(function(){
     function comment(button){
         if (canClick) {
             canClick = false;
-            const link = button.attr("data-link");
-            $.getJSON(`/article/${link}`, function(articles){
+            const id = button.attr("data-id");
+            $.getJSON(`/article/${id}`, function(articles){
                 alert("Yay! It worked!");
             });
             canClick = true;
