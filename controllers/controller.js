@@ -60,7 +60,7 @@ router.get("/articles/commented", function(req, res){
 });
 
 router.get("/article/:id", function(req, res){
-    db.Article.findOne({_id: req.params.id}).populate("comment").then(function(article){
+    db.Article.findOne({_id: req.params.id}).populate("comments").then(function(article){
         res.json([article]);
     }).catch(function(err){
         console.log(`Oh boy, it broke: ${err}`);
@@ -87,22 +87,49 @@ router.get("/scrape", function(req, res){
     });
 });
 
-router.post("/comment/:articleId", function(req, res){
-    console.log(req.params.articleId);
+router.post("/article-comment/:articleId", function(req, res){
     db.Comment.create(req.body).then(function(newComment){
         return db.Article.findOneAndUpdate({
             _id: req.params.articleId
         }, {
-            comment: newComment._id, 
+            $push: {comments: newComment._id}, 
             commentedOn: true
         }, {
             new: true
         });
     }).then(function(article){
-        console.log(article);
-        res.json(article);
+        res.status(200).end();
     }).catch(function(err){
-        res.json(err);
+        console.log(`Oh boy, it broke: ${err}`);
+        res.status(500).end();
+    });
+});
+
+router.delete("/comment/:id", function(req, res){
+    db.Comment.findOneAndDelete({_id: req.params.id}).then(function(comment){
+        commentId = comment._id;
+        return db.Article.findOneAndUpdate({
+            _id: req.body
+        }, { 
+            $pull: {comments: commentId} 
+        }, {
+            new: true
+        });
+    }).then(function(article){
+        if (article.comments.length < 1) {
+            return db.Article.findOneAndUpdate({
+                _id: req.body
+            }, {
+                commentedOn: false
+            });
+        } else {
+            res.status(200).end();
+        }
+    }).then(function(article){
+        res.status(200).end();
+    }).catch(function(err){
+        console.log(`Oh boy, it broke: ${err}`);
+        res.status(500).end();
     });
 });
 
