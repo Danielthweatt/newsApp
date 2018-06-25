@@ -118,14 +118,14 @@ router.delete("/comment/:id", function(req, res){
     }).then(function(article){
         if (article.comments.length < 1) {
             return db.Article.findOneAndUpdate({
-                _id: req.body
+                _id: article._id
             }, {
                 commentedOn: false
             });
         } else {
             res.status(200).end();
         }
-    }).then(function(article){
+    }).then(function(){
         res.status(200).end();
     }).catch(function(err){
         console.log(`Oh boy, it broke: ${err}`);
